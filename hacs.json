@@ -1,5 +1,6 @@
 {
     "name": "RECBMS",
     "render_readme": false,
-    "homeassistant": "2022.2.0b0"
+    "homeassistant": "2023.2.0",
+    "hacs": "1.28.4"
 }
