@@ -135,9 +135,6 @@ class Bms:
             vals.append(struct.unpack('<f', chunk)[0])
         return vals
 
-
-
-
 async def main():
     s = Bms("/dev/ttyUSB0")
     print(await s.identify())
