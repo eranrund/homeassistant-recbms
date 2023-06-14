@@ -32,32 +32,32 @@ class RECBMSSensorEntityDescription(SensorEntityDescription):
 
 
 SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
-    # RECBMSSensorEntityDescription(
-    #     key="battery_current",
-    #     name="Battery current",
-    #     native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
-    #     device_class=SensorDeviceClass.CURRENT,
-    #     state_class=SensorStateClass.MEASUREMENT,
-    #     value_fn=lambda data: data["status"]["bms_array"]["master"]["ibat"]
-    # ),
+    RECBMSSensorEntityDescription(
+        key="battery_current",
+        name="Battery current",
+        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+        device_class=SensorDeviceClass.CURRENT,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["current"]
+    ),
 
-    # RECBMSSensorEntityDescription(
-    #     key="battery_voltage",
-    #     name="Battery voltage",
-    #     native_unit_of_measurement=UnitOfElectricPotential.VOLT,
-    #     device_class=SensorDeviceClass.VOLTAGE,
-    #     state_class=SensorStateClass.MEASUREMENT,
-    #     value_fn=lambda data: data["status"]["bms_array"]["master"]["vbat"]
-    # ),
+    RECBMSSensorEntityDescription(
+        key="battery_voltage",
+        name="Battery voltage",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["pack_v"]
+    ),
 
-    # RECBMSSensorEntityDescription(
-    #     key="battery_soc",
-    #     name="Battery SOC",
-    #     native_unit_of_measurement='%',
-    #     device_class=SensorDeviceClass.BATTERY,
-    #     state_class=SensorStateClass.MEASUREMENT,
-    #     value_fn=lambda data: data["status"]["bms_array"]["master"]["soc"]
-    # ),
+    RECBMSSensorEntityDescription(
+        key="battery_soc",
+        name="Battery SOC",
+        native_unit_of_measurement='%',
+        device_class=SensorDeviceClass.BATTERY,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda data: data["soc"]
+    ),
 
     RECBMSSensorEntityDescription(
         key="battery_cell1",
@@ -135,7 +135,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
     RECBMSSensorEntityDescription(
         key="battery_cell_res1",
         name="Battery cell 1 resistance",
-        native_unit_of_measurement="Ω",
+        native_unit_of_measurement="mΩ",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda data: data["cell_impedances"][0]
@@ -144,7 +144,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
     RECBMSSensorEntityDescription(
         key="battery_cell_res2",
         name="Battery cell 2 resistance",
-        native_unit_of_measurement="Ω",
+        native_unit_of_measurement="mΩ",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda data: data["cell_impedances"][1]
@@ -153,7 +153,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
     RECBMSSensorEntityDescription(
         key="battery_cell_res3",
         name="Battery cell 3 resistance",
-        native_unit_of_measurement="Ω",
+        native_unit_of_measurement="mΩ",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda data: data["cell_impedances"][2]
@@ -162,7 +162,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
     RECBMSSensorEntityDescription(
         key="battery_cell_res4",
         name="Battery cell 4 resistance",
-        native_unit_of_measurement="Ω",
+        native_unit_of_measurement="mΩ",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda data: data["cell_impedances"][3]
@@ -171,7 +171,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
     RECBMSSensorEntityDescription(
         key="battery_cell_res5",
         name="Battery cell 5 resistance",
-        native_unit_of_measurement="Ω",
+        native_unit_of_measurement="mΩ",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda data: data["cell_impedances"][4]
@@ -180,7 +180,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
     RECBMSSensorEntityDescription(
         key="battery_cell_res6",
         name="Battery cell 6 resistance",
-        native_unit_of_measurement="Ω",
+        native_unit_of_measurement="mΩ",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda data: data["cell_impedances"][5]
@@ -189,7 +189,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
     RECBMSSensorEntityDescription(
         key="battery_cell_res7",
         name="Battery cell 7 resistance",
-        native_unit_of_measurement="Ω",
+        native_unit_of_measurement="mΩ",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda data: data["cell_impedances"][6]
@@ -198,7 +198,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
     RECBMSSensorEntityDescription(
         key="battery_cell_res8",
         name="Battery cell 8 resistance",
-        native_unit_of_measurement="Ω",
+        native_unit_of_measurement="mΩ",
         device_class="resistance",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda data: data["cell_impedances"][7]

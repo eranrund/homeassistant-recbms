@@ -61,11 +61,23 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
                 except:
                     _LOGGER.exception("cell_impedances failed")
 
+                try:
+                    (min_cell_v, max_cell_v, current, max_temp, pack_v, soc, soh) = await self.recbms.lcd1()
+                    data["min_cell_v"] = round(min_cell_v, 3)
+                    data["max_cell_v"] = round(max_cell_v, 3)
+                    data["current"] = round(current, 3)
+                    data["max_temp"] = round(max_temp, 3)
+                    data["pack_v"] = round(pack_v, 3)
+                    data["soc"] = round(soc, 3) * 100.0
+                    data["soh"] = round(soh, 3) * 100.0
+                except:
+                    _LOGGER.exception("lcd1 failed")
 
-                _LOGGER.info("cell_voltages: "+ repr(data))
+
+                _LOGGER.info("data: "+ repr(data))
                 self.async_set_updated_data(data)
 
-                await asyncio.sleep(1)
+                await asyncio.sleep(10)
 
         async def close(self):
             self.unsub = None
