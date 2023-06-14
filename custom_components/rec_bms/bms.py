@@ -95,14 +95,15 @@ class Bms:
             try:
                 return await asyncio.wait_for(self.cmd(text, timeout), 1)
             except:
-                LOG.exception(f"Error performing command {text}")
                 self.connected = False
                 self.reader = None
                 self.writer = None
 
                 tries -= 1
+                LOG.exception(f"Error performing command {text} (tries left #{tries})")
+
                 if tries == 0:
-                    raise
+                    return None
 
     async def identify(self):
         msgs = await self.retrying_cmd('*IDN?')

@@ -47,7 +47,7 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
         async def task():
             self.recbms = Bms(self.serial_port)
             while self.recbms != None:
-                _LOGGER.debug("coordinator task BMS")
+                _LOGGER.error("coordinator task BMS start ----")
 
                 data = {}
 
