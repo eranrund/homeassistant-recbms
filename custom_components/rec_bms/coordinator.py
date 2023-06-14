@@ -47,20 +47,23 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
         async def task():
             self.recbms = Bms(self.serial_port)
             while self.recbms != None:
-                _LOGGER.error("coordinator task BMS")
+                _LOGGER.debug("coordinator task BMS")
+
+                data = {}
 
                 try:
-                    cell_voltages = await self.recbms.cell_voltages()
+                    data["cell_voltages"] = await self.recbms.cell_voltages()
                 except:
-                    self.logger.exception("cell_voltages failed")
-                    cell_voltages = None
+                    _LOGGER.exception("cell_voltages failed")
 
-                recbms = None
+                try:
+                    data["cell_impedances"] = await self.recbms.cell_impedances()
+                except:
+                    _LOGGER.exception("cell_impedances failed")
 
-                _LOGGER.error("cell_voltages: "+ repr(cell_voltages))
-                self.async_set_updated_data({
-                    "cell_voltages": cell_voltages,
-                })
+
+                _LOGGER.info("cell_voltages: "+ repr(data))
+                self.async_set_updated_data(data)
 
                 await asyncio.sleep(1)
 
