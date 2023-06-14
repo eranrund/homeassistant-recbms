@@ -4,7 +4,6 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-import aiohttp
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -13,14 +12,13 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 
 from .const import DOMAIN
+from .bms import Bms
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO adjust the data schema to the data that you need
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
-        vol.Required("host"): str,
-        vol.Required("password"): str,
+        vol.Required("serial_port", default="/dev/ttyUSB0"): str,
     }
 )
 
@@ -53,25 +51,35 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     #     your_validate_func, data["username"], data["password"]
     # )
 
-    async with aiohttp.ClientSession() as session:
-        await session.post("http://" + data["host"] + "/lock")
-        _LOGGER.info(f"data: {data}")
+    bms = Bms(data["serial_port"])
+    try:
+        ident = await bms.identify()
+    except Exception as e:
+        _LOGGER.exception("identify failed")
+        raise CannotConnect(str(e))
+    
+    _LOGGER.info(f"ident: {ident}")
+    return {"title": ident}
 
-        async with session.post(
-            "http://" + data["host"] + "/unlock", data={"pass": data["password"]}
-        ) as response:
-            text = await response.text()
-            _LOGGER.info(f"auth returned: {text} ({response.status})")
-            if text != "OK":
-                raise InvalidAuth
+    # async with aiohttp.ClientSession() as session:
+    #     await session.post("http://" + data["host"] + "/lock")
+    #     _LOGGER.info(f"data: {data}")
 
-    # If you cannot connect:
-    # throw CannotConnect
-    # If the authentication is wrong:
-    # InvalidAuth
+    #     async with session.post(
+    #         "http://" + data["host"] + "/unlock", data={"pass": data["password"]}
+    #     ) as response:
+    #         text = await response.text()
+    #         _LOGGER.info(f"auth returned: {text} ({response.status})")
+    #         if text != "OK":
+    #             raise InvalidAuth
 
-    # Return info that you want to store in the config entry.
-    return {"title": "REC-BMS"}
+    # # If you cannot connect:
+    # # throw CannotConnect
+    # # If the authentication is wrong:
+    # # InvalidAuth
+
+    # # Return info that you want to store in the config entry.
+    # return {"title": "REC-BMS"}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
