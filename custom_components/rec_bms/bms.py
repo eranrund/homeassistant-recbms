@@ -8,6 +8,11 @@ LOG = logging.getLogger(__name__)
 
 crc16 = crcmod.mkCrcFun(0x18005, 0, True)
 
+def chunks(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+
 class Bms:
     def __init__(self, device):
         self.device = device
