@@ -65,7 +65,7 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
 
         async def close(self):
             self.unsub = None
-            self.recbms = None
+            self.serial_port = None
 
         # Shutdown on Home Assistant shutdown
         self.unsub = self.hass.bus.async_listen_once(
