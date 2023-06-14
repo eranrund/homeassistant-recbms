@@ -126,6 +126,13 @@ class Bms:
             vals.append(round(struct.unpack('<f', chunk)[0] * 1000, 3))
         return vals
 
+    async def lcd1(self):
+        msgs = await self.retrying_cmd('LCD1?')
+        data = msgs[1]
+        assert len(data) % 4 == 0, data
+        vals = []
+        for chunk in chunks(data, 4):
+            vals.append(struct.unpack('<f', chunk)[0])
 
 
 
