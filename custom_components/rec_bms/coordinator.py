@@ -34,6 +34,7 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
         _LOGGER.info("coordinator init")
         self.serial_port = entry.data["serial_port"]
         self.unsub: CALLBACK_TYPE | None = None
+        self.recbms = None
 
         super().__init__(
             hass,
@@ -44,12 +45,12 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
     @callback
     def _start(self):
         async def task():
-            while self.serial_port != None:
+            self.recbms = Bms(self.serial_port)
+            while self.recbms != None:
                 _LOGGER.error("coordinator task BMS")
-                recbms = Bms(self.serial_port)
 
                 try:
-                    cell_voltages = await recbms.cell_voltages()
+                    cell_voltages = await self.recbms.cell_voltages()
                 except:
                     self.logger.exception("cell_voltages failed")
                     cell_voltages = None
@@ -65,7 +66,7 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
 
         async def close(self):
             self.unsub = None
-            self.serial_port = None
+            self.recbms = None
 
         # Shutdown on Home Assistant shutdown
         self.unsub = self.hass.bus.async_listen_once(
