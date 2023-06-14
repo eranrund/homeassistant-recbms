@@ -65,7 +65,7 @@ SENSORS: tuple[RECBMSSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda data: data["status"]["bms_array"]["slave"]["0"]["nap"]["0"]
+        value_fn=lambda data: data["cell_voltages"][0]
     ),
 
     RECBMSSensorEntityDescription(

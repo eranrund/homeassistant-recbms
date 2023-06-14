@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from collections.abc import Callable
 from dataclasses import dataclass, field
 import logging
@@ -40,6 +41,38 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
             name=DOMAIN,
         )
 
+    @callback
+    def _start(self):
+        async def task():
+            while self.recbms != None:
+                try:
+                    cell_voltages = await self.recbms.cell_voltages()
+                except:
+                    self.logger.exception("cell_voltages failed")
+                    cell_voltages = None
+
+                self.async_set_updated_data({
+                    "cell_voltages": cell_voltages,
+                })
+
+                await asyncio.sleep(1)
+
+        async def close(self):
+            self.unsub = None
+            self.recbms = None
+
+        # Shutdown on Home Assistant shutdown
+        self.unsub = self.hass.bus.async_listen_once(
+            EVENT_HOMEASSISTANT_STOP, close
+        )
+
+        # Start listening
+        self.config_entry.async_create_background_task(
+            self.hass, task(), "recbms-loop"
+        )
+
+
+
     # @callback
     # def _use_websocket(self):
     #     async def listen():
@@ -78,5 +111,5 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
     async def _async_update_data(self):
         _LOGGER.info("coordinator _async_update_data")
 
-        # if not self.unsub:
-        #    self._use_websocket()
+        if not self.unsub:
+           self._start()

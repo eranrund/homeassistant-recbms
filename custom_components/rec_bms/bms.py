@@ -103,6 +103,16 @@ class Bms:
         msgs = await self.retrying_cmd('*IDN?')
         return msgs[0].decode()
 
+    async def cell_voltages(self):
+        msgs = await self.retrying_cmd('CELL?')
+        data = msgs[1]
+        assert len(data) % 4 == 0, data
+        vals = []
+        for chunk in chunks(data, 4):
+            vals.append(round(struct.unpack('<f', chunk)[0], 3))
+        return vals
+
+
 
 
 
