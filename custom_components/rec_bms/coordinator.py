@@ -32,7 +32,7 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
         entry: ConfigEntry,
     ) -> None:
         _LOGGER.info("coordinator init")
-        self.recbms = Bms(entry.data["serial_port"])
+        self.serial_port = entry.data["serial_port"]
         self.unsub: CALLBACK_TYPE | None = None
 
         super().__init__(
@@ -44,13 +44,19 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
     @callback
     def _start(self):
         async def task():
-            while self.recbms != None:
+            while self.serial_port != None:
+                _LOGGER.error("coordinator task BMS")
+                recbms = Bms(self.serial_port)
+
                 try:
-                    cell_voltages = await self.recbms.cell_voltages()
+                    cell_voltages = await recbms.cell_voltages()
                 except:
                     self.logger.exception("cell_voltages failed")
                     cell_voltages = None
 
+                recbms = None
+
+                _LOGGER.error("cell_voltages: "+ repr(cell_voltages))
                 self.async_set_updated_data({
                     "cell_voltages": cell_voltages,
                 })
