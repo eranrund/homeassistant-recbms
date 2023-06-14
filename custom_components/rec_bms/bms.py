@@ -133,6 +133,7 @@ class Bms:
         vals = []
         for chunk in chunks(data, 4):
             vals.append(struct.unpack('<f', chunk)[0])
+        return vals
 
 
 
