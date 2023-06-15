@@ -25,7 +25,7 @@ from .bms2 import BmsProtocol
 import serial_asyncio
 
 
-class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
+class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[BmsProtocol]):
     def __init__(
         self,
         hass: HomeAssistant,
