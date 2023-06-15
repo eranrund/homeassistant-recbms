@@ -21,7 +21,8 @@ class RECBMSError(Exception):
     pass
 
 
-from .bms import Bms
+from .bms2 import BmsProtocol
+import serial_asyncio
 
 
 class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
@@ -45,24 +46,28 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
     @callback
     def _start(self):
         async def task():
-            self.recbms = Bms(self.serial_port)
-            while self.recbms != None:
+            transport, protocol = await serial_asyncio.create_serial_connection(asyncio.get_event_loop(), BmsProtocol, '/dev/ttyUSB0', baudrate=56000)
+            while protocol.transport is None:
+                _LOGGER.error("Waiting for transport...")
+                await asyncio.sleep(1)
+
+            while True:
                 _LOGGER.error("coordinator task BMS start ----")
 
                 data = {}
 
                 try:
-                    data["cell_voltages"] = await self.recbms.cell_voltages()
+                    data["cell_voltages"] = await protocol.cell_voltages()
                 except:
                     _LOGGER.exception("cell_voltages failed")
 
                 try:
-                    data["cell_impedances"] = await self.recbms.cell_impedances()
+                    data["cell_impedances"] = await protocol.cell_impedances()
                 except:
                     _LOGGER.exception("cell_impedances failed")
 
                 try:
-                    (min_cell_v, max_cell_v, current, max_temp, pack_v, soc, soh) = await self.recbms.lcd1()
+                    (min_cell_v, max_cell_v, current, max_temp, pack_v, soc, soh) = await protocol.recbms.lcd1()
                     data["min_cell_v"] = round(min_cell_v, 3)
                     data["max_cell_v"] = round(max_cell_v, 3)
                     data["current"] = round(current, 3)
@@ -80,6 +85,7 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[Bms]):
                 await asyncio.sleep(10)
 
         async def close(self):
+            # TODO - this does nothing
             self.unsub = None
             self.recbms = None
 
