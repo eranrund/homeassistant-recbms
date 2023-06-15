@@ -67,7 +67,7 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[BmsProtocol]):
                     _LOGGER.exception("cell_impedances failed")
 
                 try:
-                    (min_cell_v, max_cell_v, current, max_temp, pack_v, soc, soh) = await protocol.recbms.lcd1()
+                    (min_cell_v, max_cell_v, current, max_temp, pack_v, soc, soh) = await protocol.lcd1()
                     data["min_cell_v"] = round(min_cell_v, 3)
                     data["max_cell_v"] = round(max_cell_v, 3)
                     data["current"] = round(current, 3)
