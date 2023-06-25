@@ -66,6 +66,7 @@ class BmsProtocol(asyncio.Protocol):
                 tries -= 1
                 if tries == 0:
                     return None
+                await asyncio.sleep(1)
         
     def decode(buf):
         msgs = []
