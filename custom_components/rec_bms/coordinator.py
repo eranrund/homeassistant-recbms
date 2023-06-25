@@ -56,27 +56,39 @@ class RECBMSDataUpdateCoordinator(DataUpdateCoordinator[BmsProtocol]):
 
                 data = {}
 
-                try:
-                    data["cell_voltages"] = await protocol.cell_voltages()
-                except:
-                    _LOGGER.exception("cell_voltages failed")
+                for i in range(3):
+                    try:
+                        data["cell_voltages"] = await protocol.cell_voltages()
+                    except:
+                        _LOGGER.exception("cell_voltages failed")
+                        await asyncio.sleep(1)
+                    else:
+                        break
 
-                try:
-                    data["cell_impedances"] = await protocol.cell_impedances()
-                except:
-                    _LOGGER.exception("cell_impedances failed")
+                for i in range(3):
+                    try:
+                        data["cell_impedances"] = await protocol.cell_impedances()
+                    except:
+                        _LOGGER.exception("cell_impedances failed")
+                        await asyncio.sleep(1)
+                    else:
+                        break
 
-                try:
-                    (min_cell_v, max_cell_v, current, max_temp, pack_v, soc, soh) = await protocol.lcd1()
-                    data["min_cell_v"] = round(min_cell_v, 3)
-                    data["max_cell_v"] = round(max_cell_v, 3)
-                    data["current"] = round(current, 3)
-                    data["max_temp"] = round(max_temp, 3)
-                    data["pack_v"] = round(pack_v, 3)
-                    data["soc"] = round(soc, 3) * 100.0
-                    data["soh"] = round(soh, 3) * 100.0
-                except:
-                    _LOGGER.exception("lcd1 failed")
+                for i in range(3):
+                    try:
+                        (min_cell_v, max_cell_v, current, max_temp, pack_v, soc, soh) = await protocol.lcd1()
+                        data["min_cell_v"] = round(min_cell_v, 3)
+                        data["max_cell_v"] = round(max_cell_v, 3)
+                        data["current"] = round(current, 3)
+                        data["max_temp"] = round(max_temp, 3)
+                        data["pack_v"] = round(pack_v, 3)
+                        data["soc"] = round(soc, 3) * 100.0
+                        data["soh"] = round(soh, 3) * 100.0
+                    except:
+                        _LOGGER.exception("lcd1 failed")
+                        await asyncio.sleep(1)
+                    else:
+                        break
 
 
                 _LOGGER.info("data: "+ repr(data))
