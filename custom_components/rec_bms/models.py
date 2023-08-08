@@ -26,5 +26,4 @@ class RECBMSEntity(CoordinatorEntity[RECBMSDataUpdateCoordinator]):
             # sw_version=str(self.coordinator.data.info.version),
             # hw_version=self.coordinator.data.info.architecture,
             # configuration_url=f"http://{self.coordinator.wled.host}",
-            hmm="TODO",
         )
