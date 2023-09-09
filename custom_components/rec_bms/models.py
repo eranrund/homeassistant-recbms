@@ -16,9 +16,6 @@ class RECBMSEntity(CoordinatorEntity[RECBMSDataUpdateCoordinator]):
     def device_info(self) -> DeviceInfo:
         """Return device information about this RECBMS device."""
         return DeviceInfo(
-            connections={
-                #(CONNECTION_NETWORK_MAC, self.coordinator.data.info.mac_address)
-            },
             #identifiers={(DOMAIN, self.coordinator.data.info.mac_address)},
             # name=self.coordinator.data.info.name,
             # manufacturer=self.coordinator.data.info.brand,
